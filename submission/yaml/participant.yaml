@@ -1,0 +1,21 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: participant4
+spec:
+  completions: 2
+  parallelism: 2
+  completionMode: Indexed
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: participant
+        image: participant:latest
+        env:
+          - name: ZOOM_MEETING_ID
+            value: "$ZOOM_MEETING_ID"
+          - name: ZOOM_MEETING_PASSCODE
+            value: "$ZOOM_MEETING_PASSCODE"
+          - name: ZOOM_SESSION_LENGTH_SECONDS
+            value: "$ZOOM_SESSION_LENGTH_SECONDS"

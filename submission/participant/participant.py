@@ -13,11 +13,16 @@ def cookies(driver):
     print('cookie pop up gone')
 
 def terms_and_policies(driver):
-    driver.find_element(By.ID, 'wc_agree1').click()
-    print('terms pop up gone')
+    try:
+        WebDriverWait(driver, 15).until(
+            EC.element_to_be_clickable((By.ID, 'wc_agree1'))
+        ).click()
+        print('terms pop up gone')
+    except Exception as e:
+        print(e)
 
 def join_meeting(driver):
-    display_name = os.environ['ZOOM_DISPLAY_NAME']
+    display_name = os.environ['HOSTNAME']
     session_seconds = os.environ['ZOOM_SESSION_LENGTH_SECONDS']
     meeting_passcode = os.environ['ZOOM_MEETING_PASSCODE']
 
