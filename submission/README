@@ -1,5 +1,10 @@
 # Zoom Participant Factory
 
+## Behaviors
+* Create Kubernetes Pods that join a Zoom meeting without audio or video
+* A single user may not request more than 15 participants in one request
+* A single user may not have more than 3 active requests concurrently
+
 ## Prerequisites
 * Python 3.8
 * Docker
@@ -40,5 +45,42 @@ kubectl get jobs -A
 kubectl get pods -A
 kubectl logs ...
 make kind_delete_participant
+make kind_delete_cluster
+```
+
+To see the API managing requests for new participants:
+
+```shell
+make kind_create_cluster
+make docker_build
+make kind_push_image
+
+cd api
+export DOCKER_REPO=localhost:5001|dockerhub|ECR
+export PARTICIPANT_TAG=latest
+
+source scripts/convenience.sh
+make api_run
+export API=localhost:8090
+// log in to Admin UI
+// create user
+
+export API_EMAIL=user@example.com
+export API_PASSWORD=abc
+
+get_new_token
+
+export API_TOKEN=...
+
+export ZOOM_MEETING_ID=123
+export ZOOM_MEETING_PASSCODE=xyz
+
+create_participant_request $ZOOM_MEETING_ID $ZOOM_MEETING_PASSCODE 20 2
+
+kubectl get jobs -A
+kubectl get pods -A
+kubectl logs ...
+
+cd ../
 make kind_delete_cluster
 ```

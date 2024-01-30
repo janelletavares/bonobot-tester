@@ -26,13 +26,13 @@ def join_meeting(driver):
     session_seconds = os.environ['ZOOM_SESSION_LENGTH_SECONDS']
     meeting_passcode = os.environ['ZOOM_MEETING_PASSCODE']
 
-    input_name = WebDriverWait(driver, 4).until(
+    input_name = WebDriverWait(driver, 10).until(
         EC.presence_of_element_located((By.ID, "input-for-name"))
     )
     input_name.clear()
     input_name.send_keys(display_name)
 
-    input_passcode = WebDriverWait(driver, 1).until(
+    input_passcode = WebDriverWait(driver, 10).until(
         EC.presence_of_element_located((By.ID, "input-for-pwd"))
     )
     input_passcode.send_keys(meeting_passcode)

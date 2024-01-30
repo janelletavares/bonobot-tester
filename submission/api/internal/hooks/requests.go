@@ -57,11 +57,21 @@ func validateParticipantCreateRequest(
 	dao := app.Dao()
 	requests, err := dao.FindRecordsByExpr("requests", dbx.HashExp{"requester": userID})
 	if err != nil {
-		return err
+		return apis.NewApiError(http.StatusInternalServerError,
+			"unable to determine status",
+			map[string]validation.Error{
+				"requests": validation.NewError("internal_error", err.Error()),
+			},
+		)
 	}
 	activeRequests, err := processRequests(ctx, dao, requests, bv1)
 	if err != nil {
-		return err
+		return apis.NewApiError(http.StatusInternalServerError,
+			"unable to determine the status of the authenticated users existing requests",
+			map[string]validation.Error{
+				"requests": validation.NewError("internal_error", err.Error()),
+			},
+		)
 	}
 
 	// limit the number of concurrent active requests
@@ -140,7 +150,12 @@ func createK8sParticipant(
 	ns, err := cv1.Namespaces().Create(ctx, generateNamespaceSpec(namespace), metav1.CreateOptions{})
 	if err != nil {
 		klog.Errorf("Error occurred while creating namespace %s: %s", ns.Name, err.Error())
-		return err
+		return apis.NewApiError(http.StatusInternalServerError,
+			"unable to process request",
+			map[string]validation.Error{
+				"namespace": validation.NewError("internal_error", err.Error()),
+			},
+		)
 	}
 
 	klog.Infof("Namespace %s is successfully created", namespace)
@@ -153,7 +168,12 @@ func createK8sParticipant(
 	job, err := bv1.Jobs(namespace).Create(ctx, jobSpec, metav1.CreateOptions{})
 	if err != nil {
 		klog.Errorf("Error occurred while creating job %s: %s", job.Name, err.Error())
-		return err
+		return apis.NewApiError(http.StatusInternalServerError,
+			"unable to process request",
+			map[string]validation.Error{
+				"job": validation.NewError("internal_error", err.Error()),
+			},
+		)
 	}
 
 	klog.Infof("Job for namespace %s with count %d is successfully created", namespace, count)
