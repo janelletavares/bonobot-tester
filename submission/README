@@ -21,6 +21,7 @@ export ZOOM_SESSION_LENGTH_SECONDS=30
 python3 participant.py
 
 # Docker
+export DOCKER_REPO=localhost:5001|dockerhub|ECR
 make docker_build
 make docker_run
 ```
@@ -30,6 +31,7 @@ make docker_run
 To see the Python script connecting to a Zoom meeting inside Kubernetes pods:
 
 ```shell
+export DOCKER_REPO=localhost:5001|dockerhub|ECR
 make kind_create_cluster
 make docker_build
 make kind_push_image

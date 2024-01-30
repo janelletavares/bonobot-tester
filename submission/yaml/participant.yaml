@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: participant4
+  name: participant6
 spec:
   completions: 2
   parallelism: 2
@@ -11,7 +11,7 @@ spec:
       restartPolicy: Never
       containers:
       - name: participant
-        image: participant:latest
+        image: $DOCKER_REPO/participant:$PARTICIPANT_TAG
         env:
           - name: ZOOM_MEETING_ID
             value: "$ZOOM_MEETING_ID"

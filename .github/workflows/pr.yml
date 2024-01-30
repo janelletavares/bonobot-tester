@@ -1,0 +1,60 @@
+name: CI
+on:
+  pull_request:
+
+permissions:
+  contents: read
+  pull-requests: write
+  security-events: write
+
+jobs:
+  build:
+    name: Build API
+    runs-on: ubuntu-latest
+    steps:
+    - name: Set up Go
+      uses: actions/setup-go@v3
+      with:
+        go-version: ^1.21
+    - name: Check out code into the Go module directory
+      uses: actions/checkout@v4
+    - name: Build
+      working-directory: submission/api
+      run: |
+       make build
+  golangci:
+    name: lint API
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-go@v3
+        with:
+          go-version: ^1.21
+      - uses: actions/checkout@v4
+      - name: golangci-lint
+        working-directory: submission/api
+        uses: golangci/golangci-lint-action@v3
+        with:
+          args: --timeout 4m0s
+  vet:
+    name: Vet API
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Vet
+        working-directory: submission/api
+        run: go vet ./...
+  test:
+    name: Test API
+    needs: [ build ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v3
+        with:
+          go-version: ^1.21
+      - name: Run tests
+        working-directory: submission/api
+        run: |
+         make test
+        env:
+         GOPATH: /home/runner/work/cli/go

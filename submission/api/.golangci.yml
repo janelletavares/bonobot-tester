@@ -1,0 +1,132 @@
+linters-settings:
+  funlen:
+    lines: 100
+    statements: 50
+  goconst:
+    min-len: 3
+    min-occurrences: 3
+  gocritic:
+    enabled-tags:
+      - diagnostic
+      - experimental
+      - opinionated
+      - performance
+      - style
+    disabled-checks:
+      - dupImport # https://github.com/go-critic/go-critic/issues/845
+      - ifElseChain
+      - octalLiteral
+      - whyNoLint
+      - wrapperFunc
+      - hugeParam
+  gocyclo:
+    min-complexity: 15
+  govet:
+    check-shadowing: true
+    settings:
+      printf:
+        funcs:
+          - (github.com/golangci/golangci-lint/pkg/logutils.Log).Infof
+          - (github.com/golangci/golangci-lint/pkg/logutils.Log).Warnf
+          - (github.com/golangci/golangci-lint/pkg/logutils.Log).Errorf
+          - (github.com/golangci/golangci-lint/pkg/logutils.Log).Fatalf
+  lll:
+    line-length: 140
+  maligned:
+    suggest-new: true
+  misspell:
+    locale: US
+  nolintlint:
+    allow-leading-space: true # don't require machine-readable nolint directives (i.e. with no leading space)
+    allow-unused: false # report any unused nolint directives
+    require-explanation: false # don't require an explanation for nolint directives
+    require-specific: false # don't require nolint directives to be specific about which linter is being skipped
+
+  depguard:
+    rules:
+      # Name of a rule.
+      main:
+        allow:
+          - $gostd
+          - github.com/meroxa
+          - github.com/alexeyco/simpletable
+          - github.com/briandowns/spinner
+          - github.com/cased/cased-go
+          - github.com/fatih/color
+          - github.com/golang/mock/gomock
+          - github.com/google/go-cmp
+          - github.com/google/uuid
+          - github.com/gorilla/mux
+          - github.com/manifoldco/promptui
+          - github.com/mattn/go-shellwords
+          - github.com/nirasan/go-oauth-pkce-code-verifier
+          - github.com/pkg/browser
+          - github.com/skratchdot/open-golang/open
+          - github.com/spf13/cobra
+          - github.com/spf13/pflag
+          - github.com/spf13/viper
+          - github.com/stretchr/testify
+          - github.com/withfig/autocomplete-tools/integrations/cobra
+          - github.com/davecgh/go-spew/spew
+
+linters:
+  # please, do not use `enable-all`: it's deprecated and will be removed soon.
+  # inverted configuration with `enable-all` and `disable` is not scalable during updates of golangci-lint
+  disable-all: true
+  enable:
+    - dogsled
+    - errcheck
+    - exhaustive
+    - exportloopref
+    - funlen
+    - goconst
+    - gocyclo
+    - godot
+    - gofmt
+    - goimports
+    - goprintffuncname
+    - govet
+    - ineffassign
+    - lll
+    - misspell
+    - nakedret
+    - nolintlint
+    - revive
+    - stylecheck
+    - typecheck
+    - unconvert
+    - unparam
+    - unused
+    - whitespace
+
+  # don't enable:
+  # - asciicheck
+  # - depguard
+  # - dupl
+  # - gochecknoglobals
+  # - gochecknoinits
+  # - gocognit
+  # - godox
+  # - goerr113
+  # - maligned
+  # - nestif
+  # - prealloc
+  # - testpackage
+  # - wsl
+  # - gomnd
+
+
+issues:
+  # Excluding configuration per-path, per-linter, per-text and per-source
+  exclude-rules:
+    - path: _test\.go
+      linters:
+        - gomnd
+        - goconst
+        - gosec
+
+    - path: utils/tests.go
+      linters:
+        - gomnd
+        - goconst
+        - gosec

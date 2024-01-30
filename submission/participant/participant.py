@@ -47,6 +47,7 @@ def join_meeting(driver):
 
 def leave_meeting(driver):
     print("done waiting")
+    # assumes no waiting room
     leave_button = "/html/body/div[3]/div[2]/div/div[2]/div/div[1]/div[1]/footer/div[1]/div[3]/button"
     WebDriverWait(driver, 10).until(
         EC.element_to_be_clickable((By.XPATH, leave_button))
