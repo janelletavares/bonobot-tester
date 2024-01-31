@@ -1,7 +1,5 @@
 FROM ubuntu:focal
 
-#USER root
-
 ENV DEBIAN_FRONTEND noninteractive
 
 ENV ZOOM_DISPLAY_NAME=""
