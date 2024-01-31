@@ -84,3 +84,10 @@ kubectl logs ...
 cd ../
 make kind_delete_cluster
 ```
+
+
+## Demo Video
+
+Click the image below
+
+[![Zoom Participant Factory Demo Video](./images/participants.png)](https://drive.google.com/file/d/11rK04qPdiUtScPDvcP3tykUNEqBBg9lA/view?usp=sharing)
