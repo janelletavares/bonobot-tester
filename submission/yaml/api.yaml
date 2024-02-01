@@ -1,0 +1,60 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: participant-api
+  labels:
+    app: participant-api
+    service: participant-api
+spec:
+  ports:
+  - name: api-http
+    protocol: TCP
+    port: 80
+    targetPort: http-web-svc
+  selector:
+    app.kubernetes.io/name: participant-api
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: participant-api-details
+  labels:
+    account: participant-api-details
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: participant-api
+  labels:
+    app.kubernetes.io/name: participant-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: participant-api
+  template:
+    metadata:
+      labels:
+        app: participant-api
+    spec:
+      containers:
+      - name: participant-api
+        image: $DOCKER_REPO/api:$API_TAG
+        imagePullPolicy: IfNotPresent
+        env:
+          - name: DOCKER_REPO
+            value: "$DOCKER_REPO"
+          - name: PARTICIPANT_TAG
+            value: "$PARTICIPANT_TAG"
+          - name: FACTORY_ENV
+            value: "cluster"
+        ports:
+          - containerPort: 80
+            name: http-web-svc
+        volumeMounts:
+          - mountPath: /app/pb_data
+            name: data-volume
+      volumes:
+        - name: data-volume
+          emptyDir:
+            sizeLimit: 500Mi

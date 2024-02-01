@@ -9,6 +9,7 @@ import (
 	"github.com/pocketbase/pocketbase"
 	"github.com/pocketbase/pocketbase/plugins/migratecmd"
 	"k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 
 	"github.com/jtav77/Janelle/submission/api/internal/hooks"
@@ -34,15 +35,25 @@ func main() {
 		panic("required env var not set: DOCKER_REPO")
 	}
 
-	homeDir, err := os.UserHomeDir()
-	if err != nil {
-		panic(err)
-	}
-	kubeconfigPath := filepath.Join(homeDir, ".kube", "config")
+	var config *rest.Config
+	env := os.Getenv("FACTORY_ENV")
+	if env == "cluster" {
+		var err error
+		config, err = rest.InClusterConfig()
+		if err != nil {
+			panic(err.Error())
+		}
+	} else {
+		homeDir, err := os.UserHomeDir()
+		if err != nil {
+			panic(err)
+		}
+		kubeconfigPath := filepath.Join(homeDir, ".kube", "config")
 
-	config, err := clientcmd.BuildConfigFromFlags("", kubeconfigPath)
-	if err != nil {
-		panic(err)
+		config, err = clientcmd.BuildConfigFromFlags("", kubeconfigPath)
+		if err != nil {
+			panic(err)
+		}
 	}
 
 	clientset, err := kubernetes.NewForConfig(config)

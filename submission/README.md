@@ -70,8 +70,20 @@ make docker_build
 make kind_push_image
 
 cd api
-source scripts/convenience.sh
+export API_TAG=latest
+make docker_build
+make kind_push_image
+
+# OR start in the cluster
+cd ../
+scripts/deploy.sh
+cd api
+
+# start locally
 make api_run
+
+
+source scripts/convenience.sh
 export API=localhost:8090
 # log in to Admin UI at localhost:8090
 # create user with email and password
