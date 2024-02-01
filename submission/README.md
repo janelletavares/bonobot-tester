@@ -1,8 +1,10 @@
 # Zoom Participant Factory
 
+This directory contains the definition of an API that manages requests to add participants to a Zoom meeting.
+
 ## Behaviors
-* Create Kubernetes Pods that join a Zoom meeting without audio or video
-* A single user may not request more than 15 participants in one request
+* Processes requests to create Kubernetes Pods that join a Zoom meeting without audio or video
+* A single user may not ask for more than 15 participants in one request
 * A single user may not have more than 3 active requests concurrently
 
 ## Prerequisites
@@ -31,13 +33,25 @@ make docker_build
 make docker_run
 ```
 
+## /api
+This directory contains the definition of an API built on [pocketbase](https://pocketbase.io/) that managages users
+and requests to add participants to a Zoom meeting.
+
 ## Local Cluster
+
+To manage the Kind cluster:
+```shell
+make kind_create_cluster
+...
+make kind_delete_cluster
+```
+
 
 To see the Python script connecting to a Zoom meeting inside Kubernetes pods:
 
 ```shell
 export DOCKER_REPO=localhost:5001|dockerhub|ECR
-make kind_create_cluster
+export PARTICIPANT_TAG=latest
 make docker_build
 make kind_push_image
 make kind_new_participant
@@ -45,25 +59,22 @@ kubectl get jobs -A
 kubectl get pods -A
 kubectl logs ...
 make kind_delete_participant
-make kind_delete_cluster
 ```
 
 To see the API managing requests for new participants:
 
 ```shell
-make kind_create_cluster
+export DOCKER_REPO=localhost:5001|dockerhub|ECR
+export PARTICIPANT_TAG=latest
 make docker_build
 make kind_push_image
 
 cd api
-export DOCKER_REPO=localhost:5001|dockerhub|ECR
-export PARTICIPANT_TAG=latest
-
 source scripts/convenience.sh
 make api_run
 export API=localhost:8090
-// log in to Admin UI
-// create user
+# log in to Admin UI at localhost:8090
+# create user with email and password
 
 export API_EMAIL=user@example.com
 export API_PASSWORD=abc
@@ -72,6 +83,7 @@ get_new_token
 
 export API_TOKEN=...
 
+# replace with real meeting details, better without a waiting room
 export ZOOM_MEETING_ID=123
 export ZOOM_MEETING_PASSCODE=xyz
 
@@ -80,9 +92,6 @@ create_participant_request $ZOOM_MEETING_ID $ZOOM_MEETING_PASSCODE 20 2
 kubectl get jobs -A
 kubectl get pods -A
 kubectl logs ...
-
-cd ../
-make kind_delete_cluster
 ```
 
 
