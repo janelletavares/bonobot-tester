@@ -42,7 +42,7 @@ def join_meeting(driver):
         EC.presence_of_element_located((By.XPATH, join_xpath))
     ).click()
 
-    print("connected and waiting...")
+    print("connected and waiting " + session_seconds + "...")
     time.sleep(int(session_seconds))
 
 def leave_meeting(driver):
